@@ -1,0 +1,2 @@
+io.dropwizard.logging.json.AccessJsonFileAppenderFactory
+io.dropwizard.logging.json.ClassicJsonFileAppenderFactory

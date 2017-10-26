@@ -6,6 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.AsyncAppenderBase;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -205,7 +206,7 @@ public abstract class AbstractAppenderFactory<E extends DeferredProcessingAware>
         return asyncAppender;
     }
 
-    protected PatternLayoutBase<E> buildLayout(LoggerContext context, LayoutFactory<E> layoutFactory) {
+    protected LayoutBase<E> buildLayout(LoggerContext context, LayoutFactory<E> layoutFactory) {
         final PatternLayoutBase<E> formatter = layoutFactory.build(context, timeZone);
         if (!Strings.isNullOrEmpty(logFormat)) {
             formatter.setPattern(logFormat);
