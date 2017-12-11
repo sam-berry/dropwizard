@@ -64,11 +64,13 @@ public class UnitOfWorkAspect {
         try {
             configureSession();
             ManagedSessionContext.bind(session);
+            UnitOfWorkContext.setSession(session);
             beginTransaction();
         } catch (Throwable th) {
             session.close();
             session = null;
             ManagedSessionContext.unbind(sessionFactory);
+            UnitOfWorkContext.clear();
             throw th;
         }
     }
@@ -108,6 +110,7 @@ public class UnitOfWorkAspect {
         } finally {
             session = null;
             ManagedSessionContext.unbind(sessionFactory);
+            UnitOfWorkContext.clear();
         }
     }
 

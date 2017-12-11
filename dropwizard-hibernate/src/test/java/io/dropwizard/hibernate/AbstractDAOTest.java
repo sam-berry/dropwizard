@@ -28,10 +28,6 @@ import static org.mockito.Mockito.when;
 
 public class AbstractDAOTest {
     private static class MockDAO extends AbstractDAO<String> {
-        MockDAO(SessionFactory factory) {
-            super(factory);
-        }
-
         @Override
         public Session currentSession() {
             return super.currentSession();
@@ -96,7 +92,7 @@ public class AbstractDAOTest {
     @SuppressWarnings("unchecked")
     private final Query<String> query = mock(Query.class);
     private final Session session = mock(Session.class);
-    private final MockDAO dao = new MockDAO(factory);
+    private final MockDAO dao = new MockDAO();
 
     @Before
     public void setup() throws Exception {

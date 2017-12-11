@@ -70,7 +70,7 @@ public class LazyLoadingTest {
             initDatabase(sessionFactory);
 
             environment.jersey().register(new UnitOfWorkApplicationListener("hr-db", sessionFactory));
-            environment.jersey().register(new DogResource(new DogDAO(sessionFactory)));
+            environment.jersey().register(new DogResource(new DogDAO()));
             environment.jersey().register(new PersistenceExceptionMapper());
             environment.jersey().register(new ConstraintViolationExceptionMapper());
         }
@@ -104,10 +104,6 @@ public class LazyLoadingTest {
     }
 
     public static class DogDAO extends AbstractDAO<Dog> {
-        DogDAO(SessionFactory sessionFactory) {
-            super(sessionFactory);
-        }
-
         Optional<Dog> findByName(String name) {
             return Optional.ofNullable(get(name));
         }
