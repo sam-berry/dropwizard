@@ -47,10 +47,6 @@ public class JerseyIntegrationTest extends JerseyTest {
     }
 
     public static class PersonDAO extends AbstractDAO<Person> {
-        public PersonDAO(SessionFactory sessionFactory) {
-            super(sessionFactory);
-        }
-
         public Optional<Person> findByName(String name) {
             return Optional.ofNullable(get(name));
         }
@@ -94,6 +90,8 @@ public class JerseyIntegrationTest extends JerseyTest {
         if (sessionFactory != null) {
             sessionFactory.close();
         }
+
+        UnitOfWorkAspect.tearDownUnitOfWorkContext();
     }
 
     @Override
@@ -133,7 +131,7 @@ public class JerseyIntegrationTest extends JerseyTest {
 
         final DropwizardResourceConfig config = DropwizardResourceConfig.forTesting(new MetricRegistry());
         config.register(new UnitOfWorkApplicationListener("hr-db", sessionFactory));
-        config.register(new PersonResource(new PersonDAO(sessionFactory)));
+        config.register(new PersonResource(new PersonDAO()));
         config.register(new JacksonMessageBodyProvider(Jackson.newObjectMapper()));
         config.register(new PersistenceExceptionMapper());
         config.register(new DataExceptionMapper());

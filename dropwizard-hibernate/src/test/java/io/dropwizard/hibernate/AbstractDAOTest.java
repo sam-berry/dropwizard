@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,10 +29,6 @@ import static org.mockito.Mockito.when;
 
 public class AbstractDAOTest {
     private static class MockDAO extends AbstractDAO<String> {
-        MockDAO(SessionFactory factory) {
-            super(factory);
-        }
-
         @Override
         public Session currentSession() {
             return super.currentSession();
@@ -96,16 +93,26 @@ public class AbstractDAOTest {
     @SuppressWarnings("unchecked")
     private final Query<String> query = mock(Query.class);
     private final Session session = mock(Session.class);
-    private final MockDAO dao = new MockDAO(factory);
+    private final MockDAO dao = new MockDAO();
 
     @Before
     public void setup() throws Exception {
+        UnitOfWork unitOfWork = ClassWithUnitOfWork.class
+            .getDeclaredMethod("example")
+            .getAnnotation(UnitOfWork.class);
+        UnitOfWorkAspect.setUnitOfWorkContext(unitOfWork, factory);
+
         when(criteriaBuilder.createQuery(same(String.class))).thenReturn(criteriaQuery);
         when(factory.getCurrentSession()).thenReturn(session);
         when(session.createCriteria(String.class)).thenReturn(criteria);
         when(session.getCriteriaBuilder()).thenReturn(criteriaBuilder);
         when(session.getNamedQuery(anyString())).thenReturn(query);
         when(session.createQuery(anyString(), same(String.class))).thenReturn(query);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        UnitOfWorkAspect.tearDownUnitOfWorkContext();
     }
 
     @Test
